@@ -1,0 +1,50 @@
+{
+  "lexicon": 1,
+  "id": "app.nearhorizon.plural.system",
+  "description": "A declaration of a plural system associated with an account. Stored as a singleton record with the rkey 'self'.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Display name for the system.",
+            "maxGraphemes": 64,
+            "maxLength": 640
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-form description of the system.",
+            "maxGraphemes": 256,
+            "maxLength": 2560
+          },
+          "collectiveNoun": {
+            "type": "string",
+            "description": "A collective noun for the system's members (e.g. 'collective', 'system', 'household').",
+            "maxGraphemes": 32,
+            "maxLength": 320
+          },
+          "memberCount": {
+            "type": "string",
+            "description": "Optional self-reported total member count. A string to allow values like '20+' or 'many'.",
+            "maxGraphemes": 16,
+            "maxLength": 64
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when the system record was first created."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of the most recent update to this record."
+          }
+        }
+      }
+    }
+  }
+}

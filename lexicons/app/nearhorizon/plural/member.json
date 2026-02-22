@@ -1,0 +1,137 @@
+{
+  "lexicon": 1,
+  "id": "app.nearhorizon.plural.member",
+  "description": "A member of a plural system. Each member is a separate record within the collection, keyed by a stable slug (e.g. 'wren', 'sparrow').",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["displayName"],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "Display name of the member.",
+            "maxGraphemes": 64,
+            "maxLength": 640
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-form bio or description of the member.",
+            "maxGraphemes": 256,
+            "maxLength": 2560
+          },
+          "emoji": {
+            "type": "string",
+            "description": "A single emoji used as a visual identifier for the member.",
+            "maxGraphemes": 4,
+            "maxLength": 16
+          },
+          "color": {
+            "type": "string",
+            "description": "A hex color code associated with the member (e.g. '#FFABDB').",
+            "maxLength": 7,
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          },
+          "pronouns": {
+            "type": "array",
+            "description": "Pronoun sets for this member. Each entry contains an array of pronoun forms.",
+            "items": {
+              "type": "ref",
+              "ref": "#pronounSet"
+            },
+            "maxLength": 6
+          },
+          "roles": {
+            "type": "array",
+            "description": "Free-form roles within the system (e.g. 'host', 'protector', 'memory storage').",
+            "items": {
+              "type": "string",
+              "maxGraphemes": 32,
+              "maxLength": 320
+            },
+            "maxLength": 10
+          },
+          "memberTypes": {
+            "type": "array",
+            "description": "Categorization of the member's fronting behavior (e.g. 'fronter', 'co-fronter', 'non-fronter').",
+            "items": {
+              "type": "string",
+              "maxGraphemes": 32,
+              "maxLength": 320
+            },
+            "maxLength": 5
+          },
+          "agePresentation": {
+            "type": "string",
+            "description": "How the member presents in terms of age (e.g. '25', 'ageless', 'child').",
+            "maxGraphemes": 32,
+            "maxLength": 320
+          },
+          "proxy": {
+            "type": "ref",
+            "description": "If this member communicates through another member.",
+            "ref": "#proxyRef"
+          },
+          "avatar": {
+            "type": "blob",
+            "description": "Avatar image for the member.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
+          },
+          "banner": {
+            "type": "blob",
+            "description": "Banner image for the member.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when this member record was first created."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of the most recent update to this record."
+          }
+        }
+      }
+    },
+    "pronounSet": {
+      "type": "object",
+      "description": "A set of pronoun forms for a member. Follows the same format as app.nearhorizon.actor.pronouns — forms are free-text to support neopronouns and combined sets.",
+      "required": ["forms"],
+      "properties": {
+        "forms": {
+          "type": "array",
+          "description": "Individual pronoun forms (e.g. ['she', 'they · it', 'faer']).",
+          "items": {
+            "type": "string",
+            "maxGraphemes": 24,
+            "maxLength": 240
+          },
+          "maxLength": 6
+        }
+      }
+    },
+    "proxyRef": {
+      "type": "object",
+      "description": "A reference to another member who speaks on behalf of this member.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The rkey of the proxy member record."
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note about the proxy relationship (e.g. 'speaks through', 'communicates through Wren').",
+          "maxGraphemes": 64,
+          "maxLength": 640
+        }
+      }
+    }
+  }
+}

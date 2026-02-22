@@ -1,0 +1,60 @@
+{
+  "lexicon": 1,
+  "id": "app.nearhorizon.plural.front",
+  "description": "The current fronting state of a plural system. Stored as a singleton record with the rkey 'self'. Updated whenever the front changes.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "required": ["members", "setAt"],
+        "properties": {
+          "members": {
+            "type": "array",
+            "description": "Members currently in front or co-conscious. Each entry references a member record by rkey and includes an optional status.",
+            "items": {
+              "type": "ref",
+              "ref": "#frontMember"
+            },
+            "maxLength": 20
+          },
+          "state": {
+            "type": "string",
+            "description": "Overall front state descriptor (e.g. 'solo', 'co-fronting', 'switching').",
+            "maxGraphemes": 32,
+            "maxLength": 320
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional free-form note about the current front state.",
+            "maxGraphemes": 256,
+            "maxLength": 2560
+          },
+          "setAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when this front state was set."
+          }
+        }
+      }
+    },
+    "frontMember": {
+      "type": "object",
+      "description": "A reference to a member in the current front, with their engagement status.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The rkey of the member record (e.g. 'wren', 'sparrow')."
+        },
+        "status": {
+          "type": "string",
+          "description": "The member's current engagement level. 'engaging' (or absent) means actively fronting. Other values like 'co-conscious', 'observing', 'dormant' indicate lesser degrees of presence.",
+          "maxGraphemes": 32,
+          "maxLength": 320
+        }
+      }
+    }
+  }
+}
