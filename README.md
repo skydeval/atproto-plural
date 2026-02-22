@@ -3,23 +3,23 @@
 **Namespace:** `app.nearhorizon.plural.*`
 **License:** Apache 2.0
 
-Plural systems on ATProto. Members, fronting state, and identity — stored in the user's repository.
+Plural systems on ATProto. Members, fronting state, and identity, all stored in the user's repository.
 
 ## Why this exists
 
-[Plurality](https://morethanone.info) is the experience of multiple distinct identities sharing a single body (and, on social platforms, a single account). These identities — called members, headmates, or alters depending on the community — may take turns controlling the account ("fronting"), be present simultaneously ("co-fronting"), or be aware without actively participating ("co-conscious").
+[Plurality](https://morethanone.info) is the experience of multiple distinct identities sharing a single body (and, on social platforms, a single account). These identities (often called members, headmates, or alters) may take turns controlling the account ("fronting"), be present simultaneously ("co-fronting"), or be aware without actively participating ("co-conscious").
 
 Most social platforms have no concept of this. You get one name, one avatar, one set of pronouns, and that's it.
 
-This lexicon gives plural systems a way to declare themselves, list their members, and indicate who's fronting — all as records in their own account repository. No labeler dependency, no external service. If a client doesn't understand the lexicon, it ignores it. Nothing breaks.
+This lexicon gives plural systems a way to declare themselves, list their members, and indicate who's fronting, all as records in their own account repository. No labeler dependency, no external service. If a client doesn't understand the lexicon, it ignores it. Nothing breaks.
 
 ## Records
 
 Three records, cleanly separated:
 
-- **`system`** — "this account is a plural system" (singleton, `rkey: self`)
-- **`member`** — one per member, keyed by a stable slug (e.g. `wren`, `sparrow`)
-- **`front`** — who's fronting right now (singleton, `rkey: self`)
+- **`system`**: "this account is a plural system" (singleton, `rkey: self`)
+- **`member`**: one per member, keyed by a stable slug (e.g. `wren`, `sparrow`)
+- **`front`**: who's fronting right now (singleton, `rkey: self`)
 
 Static identity doesn't change when someone switches. Dynamic state doesn't bloat member records. They stay separate on purpose.
 
@@ -30,7 +30,7 @@ Static identity doesn't change when someone switches. Dynamic state doesn't bloa
 | `name` | string | Display name for the system (e.g. "The Flock") |
 | `description` | string | Free-form description |
 | `collectiveNoun` | string | What to call the group (e.g. "collective", "household") |
-| `memberCount` | string | Self-reported count — a string so you can say "20+" or "many" |
+| `memberCount` | string | Self-reported count. A string, so you can say "20+" or "many" |
 | `createdAt` | datetime | When the record was created |
 | `updatedAt` | datetime | Last update |
 
@@ -44,13 +44,13 @@ No fields are required. The record existing is the signal.
 | `description` | string | Bio or description |
 | `emoji` | string | Visual identifier emoji |
 | `color` | string | Hex color (e.g. "#FFABDB") |
-| `pronouns` | pronounSet[] | Pronoun sets — same format as [`app.nearhorizon.actor.pronouns`](https://github.com/skydeval/atproto-pronouns) |
+| `pronouns` | pronounSet[] | Pronoun sets, same format as [`app.nearhorizon.actor.pronouns`](https://github.com/skydeval/atproto-pronouns) |
 | `roles` | string[] | System roles (e.g. "host", "protector") |
 | `memberTypes` | string[] | Fronting behavior (e.g. "fronter", "co-fronter", "non-fronter") |
 | `agePresentation` | string | How the member presents age-wise (e.g. "25", "ageless") |
 | `proxy` | proxyRef | If this member communicates through another member |
-| `avatar` | blob | Member avatar (PNG/JPEG, max 1MB) |
-| `banner` | blob | Member banner (PNG/JPEG, max 1MB) |
+| `avatar` | blob | Member avatar (PNG/JPEG/WebP, max 1MB) |
+| `banner` | blob | Member banner (PNG/JPEG/WebP, max 1MB) |
 | `createdAt` | datetime | When the record was created |
 | `updatedAt` | datetime | Last update |
 
@@ -77,7 +77,7 @@ Same structure as the [pronouns lexicon](https://github.com/skydeval/atproto-pro
 }
 ```
 
-Some members can't front or communicate directly — they rely on another member to speak on their behalf. The proxy field records that relationship.
+Some members can't front or communicate directly. They rely on another member to speak on their behalf. The proxy field records that relationship.
 
 ### `app.nearhorizon.plural.front`
 
@@ -102,14 +102,14 @@ Some members can't front or communicate directly — they rely on another member
 
 `status` describes engagement level:
 
-- **`engaging`** (or absent) — actively fronting: this member is currently "driving" the account
-- **`co-conscious`** — aware and present, but not the one actively posting/interacting
-- **`observing`** — passively watching, not participating
-- **`dormant`** — listed in the front record but not currently active
+- **`engaging`** (or absent): actively fronting. This member is currently "driving" the account.
+- **`co-conscious`**: aware and present, but not the one actively posting/interacting.
+- **`observing`**: passively watching, not participating.
+- **`dormant`**: listed in the front record but not currently active.
 
 These are conventions, not an enum. Clients should treat any unrecognized status as less present than `engaging`.
 
-All member references are by rkey and are intra-DID — they point to records in the same account's repo. No cross-account references.
+All member references are by rkey and are intra-DID. They point to records in the same account's repo. No cross-account references.
 
 ## Design principles
 
@@ -129,13 +129,13 @@ All member references are by rkey and are intra-DID — they point to records in
 
 ### Record keys
 
-Member rkeys should be lowercase alphanumeric slugs (e.g. `wren`, `sparrow`, `the-host`). ATProto constrains rkeys to alphanumeric characters, hyphens, underscores, and periods, max 512 characters. Don't use display names as rkeys — they change, slugs shouldn't.
+Member rkeys should be lowercase alphanumeric slugs (e.g. `wren`, `sparrow`, `the-host`). ATProto constrains rkeys to alphanumeric characters, hyphens, underscores, and periods, max 512 characters. Don't use display names as rkeys. They change, slugs shouldn't.
 
 ### Front states
 
-An empty `members` array (`"members": []`) means nobody is fronting. This is different from deleting the front record entirely — an empty front is an explicit "nobody's here right now," while a missing front record means the system hasn't set one up yet. Clients should handle both gracefully.
+An empty `members` array (`"members": []`) means nobody is fronting. This is different from deleting the front record entirely. An empty front is an explicit "nobody's here right now," and a missing front record means the system hasn't set one up yet. Clients should handle both gracefully.
 
-The order of members in the `members` array is not significant. Don't assume the first entry is the "primary" fronter — use the `status` field instead. All members with `status: "engaging"` (or no status) are equally fronting.
+The order of members in the `members` array is not significant. Don't assume the first entry is the "primary" fronter. Use the `status` field instead. All members with `status: "engaging"` (or no status) are equally fronting.
 
 ### Proxy members and fronting
 
@@ -167,11 +167,11 @@ In the reference implementation, a `&` is appended to the fronter's display name
 
 ### Member count
 
-`memberCount` on the system record is self-reported as a string. It might not match the actual number of member records — not all members may be listed, or the system might use approximate values like "20+" or "many." Treat the self-reported count as authoritative for display. The actual record count is just what's published.
+`memberCount` on the system record is self-reported as a string. It might not match the actual number of member records, since not all members may be listed, or the system might use approximate values like "20+" or "many." Treat the self-reported count as authoritative for display. The actual record count is just what's published.
 
 ### Removing a plural profile
 
-To fully remove a plural profile, delete all three record types: system, all members, and front. If a client sees member records but no system record, it should not treat the account as a plural system — the system record is the signal.
+To fully remove a plural profile, delete all three record types: system, all members, and front. If a client sees member records but no system record, it should not treat the account as a plural system. The system record is the signal.
 
 ## Example
 
@@ -271,7 +271,7 @@ Any ATProto client can implement this. Standard `putRecord` / `getRecord` calls,
 
 ### Implementations
 
-*None yet — be the first!*
+*None yet. Be the first!*
 
 ## License
 
