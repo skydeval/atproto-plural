@@ -3,7 +3,7 @@
 **Namespace:** `app.nearhorizon.plural.*`
 **License:** Apache 2.0
 
-Plural systems on ATProto. Members, fronting state, and identity — stored on the user's PDS, not someone else's server.
+Plural systems on ATProto. Members, fronting state, and identity — stored in the user's repository.
 
 ## Why this exists
 
